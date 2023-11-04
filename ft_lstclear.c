@@ -21,7 +21,7 @@
  *
  *	DESCRIPTION
  *	Deletes and frees the given node and every
- *  successor of that node, using the function ’del’
+ *  SUCCESSOR of that node, using the function ’del’
  *  and free(3).
  *  Finally, the pointer to the list must be set to NULL.
 */
@@ -36,7 +36,7 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 	if (NULL == lst || NULL == del)
 		return ;
 	current = *lst;
-	while (NULL != current)
+	while (current)
 	{
 		tmp = current;
 		current = current->next;

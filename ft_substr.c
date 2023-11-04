@@ -35,13 +35,17 @@
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*str;
+	size_t	s_len;
+	size_t	substring_len;
 
 	if (NULL == s)
 		return (NULL);
-	if (start >= ft_strlen(s))
+	s_len = ft_strlen(s);
+	if (start >= s_len)
 		return (ft_strdup(""));
-	if (len > ft_strlen(s))
-		len = ft_strlen(s);
+	substring_len = s_len - start;
+	if (len > substring_len)
+		len = substring_len;
 	str = malloc(len + 1);
 	if (NULL == str)
 		return (NULL);
@@ -50,11 +54,12 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 }
 
 /*
+#include <stdio.h>
 int	main()
 {
 	char	*str;
 
 	str = "hello";
-	printf("%s\n",ft_substr(str, 400, 20));
+	printf("%s\n",ft_substr(str, 0, 20));
 }
 */

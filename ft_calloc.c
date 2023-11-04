@@ -17,11 +17,16 @@
  *   ~that are size bytes of memory each.
  *   returns a pointer to the allocated memory. 
 	 The allocated memory is filled with bytes of value zero.
+
+	 If error return NULL 
+	 and set errno to ENOMEM.
+
+	 In the C standard library, calloc is expected to return a 
+	 valid pointer when both nmemb and size are 0.
+
 */
 
-//#include <stdio.h>
 #include "libft.h"
-#include <stdlib.h>
 
 void	*ft_calloc(size_t nmemb, size_t size)
 {
@@ -29,7 +34,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	void	*ptr;
 
 	bytes = nmemb * size;
-	if (size && (bytes / size) != nmemb)
+	if (size && ((bytes / size) != nmemb))
 		return (NULL);
 	ptr = malloc(bytes);
 	if (NULL == ptr)

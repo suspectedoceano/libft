@@ -14,7 +14,22 @@
 //#include <stdlib.h>
 //#include <stdio.h>
 
-static int	count_strings(const char *s, char delimiter)
+/*
+ * DESCRIPTION
+ * Allocates (with malloc(3)) and returns an array of strings obtained 
+ * by splitting ’s’ using the character ’c’ as a delimiter. 
+ * The array must end with a NULL pointer.
+ *
+ * RETURN
+ * The array of new strings resulting from the split.
+ * NULL if the allocation fails.
+ *
+ * INPUT 
+ * s: The string to be split.
+   c: The delimiter character.
+*/
+
+static size_t	count_strings(const char *s, char delimiter)
 {
 	size_t	strings;
 
@@ -33,35 +48,49 @@ static int	count_strings(const char *s, char delimiter)
 	return (strings);
 }
 
-static void	fill_matrix(char **matrix, const char *s, char delimiter)
+static int	safe_malloc(char **matrix, int position, size_t buffer)
 {
-	size_t	i;
-	size_t	j;
+	int		i;
+
+	i = 0;
+	matrix[position] = malloc(buffer);
+	if (NULL == matrix[position])
+	{
+		while (i < position)
+			free(matrix[i++]);
+		free(matrix);
+		return (1);
+	}
+	return (0);
+}
+
+static int	fill_matrix(char **matrix, const char *s, char delimiter)
+{
+	int		i;
 	size_t	len;
 
 	i = 0;
-	j = 0;
-	while (*(s + i))
+	while (*s)
 	{
 		len = 0;
-		while (*(s + i) == delimiter)
-			++i;
-		while (*(s + i) != delimiter && *(s + i))
+		while (*s == delimiter)
+			++s;
+		while (*s != delimiter && *s)
 		{
 			++len;
-			++i;
+			++s;
 		}
 		if (len)
-			matrix[j] = malloc(len + 1);
-		if (NULL == matrix[j])
-			matrix[j] = NULL;
-		ft_strlcpy(matrix[j++], (s + i) - len, len + 1);
+			if (safe_malloc(matrix, i, len + 1))
+				return (1);
+		ft_strlcpy(matrix[i++], s - len, len + 1);
 	}
+	return (0);
 }
 
 char	**ft_split(char const *s, char c)
 {
-	int		strings;
+	size_t	strings;
 	char	**matrix;
 	int		i;
 
@@ -73,16 +102,15 @@ char	**ft_split(char const *s, char c)
 	if (NULL == matrix)
 		return (NULL);
 	matrix[strings] = NULL;
-	fill_matrix(matrix, s, c);
+	if (fill_matrix(matrix, s, c))
+		return (NULL);
 	return (matrix);
 }
+
 /*
+ * TEST
 int	main()
 {
-	char	**v;
-
-	v = ft_split("         ", 32);
-	while (*v)
-		printf("%c\n", (char)*v++);
+	ft_split("hello!", 32:' ');
 }
 */
