@@ -40,8 +40,7 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 	{
 		tmp = current;
 		current = current->next;
-		del(tmp->content);
-		free(tmp);
+		ft_lstdelone(tmp, del);
 	}
 	*lst = NULL;
 }
