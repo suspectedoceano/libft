@@ -32,15 +32,13 @@
 
 int	ft_lstsize(t_list *lst)
 {
-	t_list	*current;
 	int		counter;
 
-	current = lst;
 	counter = 0;
-	while (current)
+	while (lst)
 	{
 		++counter;
-		current = current->next;
+		lst = lst->next;
 	}
 	return (counter);
 }
