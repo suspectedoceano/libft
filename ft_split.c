@@ -28,89 +28,96 @@
  * s: The string to be split.
    c: The delimiter character.
 */
-
-static size_t	count_strings(const char *s, char delimiter)
-{
-	size_t	strings;
-
-	strings = 0;
-	while (*s)
-	{
-		while (*s == delimiter && *s)
-			++s;
-		if (*s != delimiter && *s)
-		{
-			++strings;
-			while (*s != delimiter && *s)
-				++s;
-		}
-	}
-	return (strings);
-}
-
-static int	safe_malloc(char **matrix, int position, size_t buffer)
+int	safe_malloc(char **token_v, int position, size_t buffer)
 {
 	int		i;
 
 	i = 0;
-	matrix[position] = malloc(buffer);
-	if (NULL == matrix[position])
+	token_v[position] = malloc(buffer);
+	if (NULL == token_v[position])
 	{
 		while (i < position)
-			free(matrix[i++]);
-		free(matrix);
+			free(token_v[i++]);
+		free(token_v);
 		return (1);
 	}
 	return (0);
 }
 
-static int	fill_matrix(char **matrix, const char *s, char delimiter)
+// return 0 if all mallocs went fine, otherwise 1
+int	fill(char **token_v, char const *s, char delimeter)
 {
-	int		i;
 	size_t	len;
+	int		i;
 
 	i = 0;
 	while (*s)
 	{
 		len = 0;
-		while (*s == delimiter && *s)
+		while (*s == delimeter && *s)
 			++s;
-		while (*s != delimiter && *s)
+		while (*s != delimeter && *s)
 		{
 			++len;
 			++s;
 		}
 		if (len)
-			if (safe_malloc(matrix, i, len + 1))
+			if (safe_malloc(token_v, i, len + 1))
 				return (1);
-		ft_strlcpy(matrix[i++], s - len, len + 1);
+		ft_strlcpy(token_v[i], s - len, len + 1);
+		++i;
 	}
 	return (0);
 }
 
-char	**ft_split(char const *s, char c)
+size_t	count_tokens(char const *s, char delimeter)
 {
-	size_t	strings;
-	char	**matrix;
-	int		i;
+	size_t	tokens;
+	int		inside_token;
 
-	i = 0;
-	if (NULL == s)
-		return (NULL);
-	strings = count_strings(s, c);
-	matrix = malloc((strings + 1) * sizeof(char *));
-	if (NULL == matrix)
-		return (NULL);
-	matrix[strings] = NULL;
-	if (fill_matrix(matrix, s, c))
-		return (NULL);
-	return (matrix);
+	tokens = 0;
+	while (*s)
+	{
+		inside_token = 0;
+		while (*s == delimeter && *s)
+			++s;
+		while (*s != delimeter && *s)
+		{
+			if (!inside_token)
+			{
+				++tokens;
+				inside_token = 42;
+			}
+			++s;
+		}
+	}
+	return (tokens);
 }
 
 /*
- * TEST
-int	main()
+ * INPUT
+ *
+ * "___Hello_there,_dude!!"
+ *
+ *  v--->[0]------->"Hello"
+ *   |-->[1]------->"there,"
+ *   |-->[2]------->"dude!!"
+ *   |-->[NULL]
+**/
+char	**ft_split(char const *s, char c)
 {
-	ft_split("hello!", 32:' ');
+	size_t	tokens;
+	char	**token_v;
+
+	if (NULL == s)
+		return (NULL);
+	tokens = 0;
+	tokens = count_tokens(s, c);
+	token_v = malloc((tokens + 1) * sizeof(char *));
+	if (NULL == token_v)
+		return (NULL);
+	token_v[tokens] = NULL;
+	if (fill(token_v, s, c))
+		return (NULL);
+	return (token_v);
 }
-*/
