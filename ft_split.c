@@ -73,7 +73,7 @@ static int	fill_matrix(char **matrix, const char *s, char delimiter)
 	while (*s)
 	{
 		len = 0;
-		while (*s == delimiter)
+		while (*s == delimiter && *s)
 			++s;
 		while (*s != delimiter && *s)
 		{
