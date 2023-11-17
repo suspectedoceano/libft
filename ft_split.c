@@ -62,9 +62,11 @@ int	fill(char **token_v, char const *s, char delimeter)
 			++s;
 		}
 		if (len)
-			if (safe_malloc(token_v, i, len + 1))
-				return (1);
-		ft_strlcpy(token_v[i], s - len, len + 1);
+		{
+			 if (safe_malloc(token_v, i, len + 1))
+				   return (1);
+		  ft_strlcpy(token_v[i], s - len, len + 1);
+		}
 		++i;
 	}
 	return (0);
